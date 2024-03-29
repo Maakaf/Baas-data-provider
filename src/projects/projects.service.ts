@@ -1,8 +1,13 @@
+import { CreateProjectDto } from '@/common/dto/project';
 import {
   Language,
   LanguageDocument,
 } from '@/common/mongoose/schemas/languages';
 import { Project, ProjectDocument } from '@/common/mongoose/schemas/project';
+import {
+  ProjectRequest,
+  ProjectRequestDocument,
+} from '@/common/mongoose/schemas/projectRequest';
 import { GithubGqlService } from '@/github-gql/github-gql.service';
 import { IGithubGQLResponse } from '@/types';
 import {
@@ -14,6 +19,9 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Model, PipelineStage } from 'mongoose';
+import * as projectJsons from '@/../jsons/projects.json';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class ProjectsService implements OnModuleInit {
@@ -23,6 +31,8 @@ export class ProjectsService implements OnModuleInit {
     private readonly projectModel: Model<ProjectDocument>,
     @InjectModel(Language.name)
     private readonly languageModel: Model<LanguageDocument>,
+    @InjectModel(ProjectRequest.name)
+    private readonly projectRequestModel: Model<ProjectRequestDocument>,
   ) {}
 
   async onModuleInit(): Promise<void> {
@@ -208,5 +218,27 @@ export class ProjectsService implements OnModuleInit {
       .exec();
 
     return languages;
+  }
+
+  async create(
+    createProjectDto: CreateProjectDto,
+  ): Promise<ProjectRequestDocument> {
+    const createdProjectRequest = new this.projectRequestModel(
+      createProjectDto,
+    );
+    this.updateJson(createdProjectRequest);
+    return await createdProjectRequest.save();
+  }
+
+  private updateJson(createProjectDto: CreateProjectDto): void {
+    projectJsons.push({
+      githubLink: createProjectDto.githubLink,
+      discordLink: createProjectDto.discordLink,
+    });
+
+    fs.writeFileSync(
+      path.join(__dirname, '../../../jsons/projects.json'),
+      JSON.stringify(projectJsons),
+    );
   }
 }

@@ -2,7 +2,7 @@ import {
   ProjectPaginationFilter,
   ProjectPaginationRequest,
 } from '@/types/project';
-import { IsEnum, IsInt, Max, Min } from 'class-validator';
+import { IsEnum, IsInt, IsNotEmpty, IsString, Max, Min } from 'class-validator';
 
 // create a DTO for the request body
 export class ProjectPaginationRequestBodyDto
@@ -24,4 +24,14 @@ export class ProjectPaginationRequestBodyDto
 
   @IsEnum(ProjectPaginationFilter)
   filter: ProjectPaginationFilter;
+}
+
+export class CreateProjectDto {
+  @IsNotEmpty()
+  @IsString()
+  githubLink: string;
+
+  @IsNotEmpty()
+  @IsString()
+  discordLink: string;
 }

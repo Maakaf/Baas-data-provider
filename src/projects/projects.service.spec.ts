@@ -12,6 +12,11 @@ import {
   TestDbModule,
   closeInMongodConnection,
 } from '@/../test/mocks/module/mongo-in-memory';
+import {
+  ProjectRequest,
+  ProjectRequestSchema,
+} from '@/common/mongoose/schemas/projectRequest';
+import { CreateProjectDto } from '@/common/dto/project';
 
 const mockProject1 = makeMockProject('project1', 'AAAA', ['JavaScript']);
 const mockProject2 = makeMockProject('project2', 'BBBB', [
@@ -30,6 +35,7 @@ describe('ProjectsService', () => {
   let service: ProjectsService;
   let projectModel: Model<Project>;
   let languageModel: Model<Language>;
+  let projectRequestModel: Model<ProjectRequest>;
   const timestamp = new Date();
 
   beforeEach(async () => {
@@ -43,6 +49,7 @@ describe('ProjectsService', () => {
         MongooseModule.forFeature([
           { name: 'Project', schema: ProjectSchema },
           { name: 'Language', schema: LanguageSchema },
+          { name: 'ProjectRequest', schema: ProjectRequestSchema },
         ]),
         // Include any setup for in-memory MongoDB here
       ],
@@ -51,6 +58,9 @@ describe('ProjectsService', () => {
     service = module.get<ProjectsService>(ProjectsService);
     projectModel = module.get<Model<Project>>(getModelToken('Project'));
     languageModel = module.get<Model<Language>>(getModelToken('Language'));
+    projectRequestModel = module.get<Model<ProjectRequest>>(
+      getModelToken('ProjectRequest'),
+    );
 
     // Mock the GithubGqlService if you don't want to hit the actual GitHub API in tests
     // Reset mocks before each test to clear previous calls and set the specific behavior for getProjects
@@ -94,6 +104,7 @@ describe('ProjectsService', () => {
     // Clean up database after each test
     await projectModel.deleteMany({});
     await languageModel.deleteMany({});
+    await projectRequestModel.deleteMany({});
   });
 
   afterAll(async () => {
@@ -280,6 +291,21 @@ describe('ProjectsService', () => {
       expect(
         projects[0].item.data.repository.contributors.edges.length,
       ).toEqual(10);
+    });
+  });
+
+  // TODO re work creates here in future from api request
+  describe.skip('create', () => {
+    it('should create a prolect', async () => {
+      const createProjectDto: CreateProjectDto = {
+        githubLink: 'https://github.com/Maakaf/Baas-data-provider',
+        discordLink: 'aaaa',
+      };
+
+      const result = await service.create(createProjectDto);
+
+      expect(result).toEqual(expect.objectContaining(createProjectDto));
+      expect(result._id).toBeDefined(); // Ensure _id is defined
     });
   });
 });
