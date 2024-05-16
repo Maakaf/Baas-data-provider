@@ -8,6 +8,7 @@ import { MembersModule } from './members/members.module';
 import { GithubGqlModule } from './github-gql/github-gql.module';
 import { ProjectsModule } from './projects/projects.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
+import { CoreRecordsModule } from './core-records/core-records.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { LeaderboardModule } from './leaderboard/leaderboard.module';
     GithubGqlModule,
     ProjectsModule,
     LeaderboardModule,
+    CoreRecordsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

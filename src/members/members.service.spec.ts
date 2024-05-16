@@ -72,7 +72,7 @@ describe('MembersService', () => {
       expect(result._id).toBeDefined(); // Ensure _id is defined
     });
   });
-
+  // TODO re work creates here in future from api request
   describe.skip('createMany', () => {
     it('should create multiple members', async () => {
       const createMemberDtos: CreateMemberDto[] = [
