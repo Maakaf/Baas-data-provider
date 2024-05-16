@@ -1,21 +1,12 @@
 import { AnalyticsDto } from '@/common/dto/leaderboard';
-import {
-  Leaderboard,
-  LeaderboardDocument,
-} from '@/common/mongoose/schemas/leaderboard';
 import getLeaderBoardDataFROMJSON from '@/common/utils/getLeaderBoardDataFROMJSON';
 import { LeaderboardTypeAnalytics } from '@/types/leaderboard';
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { Model } from 'mongoose';
 
 @Injectable()
 export class LeaderboardService implements OnModuleInit {
-  constructor(
-    @InjectModel(Leaderboard.name)
-    private readonly languageModel: Model<LeaderboardDocument>,
-  ) {}
+  constructor() {} // private readonly leaderboard: Model<>, // @InjectModel(Leaderboard.name)
 
   async getLeaderboardData(): Promise<AnalyticsDto> {
     const since = '2024-01-05T00:00:00Z';
