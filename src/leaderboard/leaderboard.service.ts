@@ -33,6 +33,7 @@ export class LeaderboardService implements OnModuleInit {
 
   @Cron(CronExpression.EVERY_10_MINUTES)
   async handleCron() {
+    console.log('Running fetch and store leaderboard cron job');
     // Implement a delete function to delete old data 6 weeks or older
     await this.saveLeaderboard();
   }
